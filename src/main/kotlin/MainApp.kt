@@ -6,21 +6,25 @@ fun main() {
         var game = Game(
             Area(canvas.width, canvas.height),
             emptyList(),
-            Spaceship(SPACESHIP_WIDTH, SPACESHIP_HEIGHT, CANVAS_WIDTH / 2, SPACESHIP_BASE_LINE, SPACESHIP_COLOR)
+            Spaceship(SPACESHIP_WIDTH, SPACESHIP_HEIGHT, canvas.width / 2, SPACESHIP_BASE_LINE, SPACESHIP_COLOR)
         )
 
-        canvas.drawGame(game)
+        canvas.drawGame(game, Shot())
 
-        canvas.onTimeProgress(70){
-//            game.addShot()
-            if (game.alienShots.size < 6)game = game.copy(alienShots = (game.alienShots + Shot()))
-            canvas.drawGame(game)
-            game = game.moveShot()
+        canvas.onTimeProgress(7){
+            game = game.addAlienShot()
+            game = game.removeAlienShot()
+            game = game.moveAlienShot()
+
+            canvas.drawGame(game, Shot(game.ship.x, game.ship.y))
         }
 
         canvas.onMouseMove {
             if (isOnLimit(it)) game = game.moveSpaceship(it.x)
-            canvas.drawGame(game)
+            canvas.drawGame(game, Shot())
+        }
+        canvas.onMouseDown {
+            game = game.shot()
         }
     }
     onFinish { }
