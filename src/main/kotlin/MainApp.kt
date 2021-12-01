@@ -11,10 +11,11 @@ fun main() {
 
         canvas.drawGame(game)
 
-        canvas.onTimeProgress(250){
-            game = game.copy(alienShots = (game.alienShots + Shot()))
-            game = game.moveShot()
+        canvas.onTimeProgress(70){
+//            game.addShot()
+            if (game.alienShots.size < 6)game = game.copy(alienShots = (game.alienShots + Shot()))
             canvas.drawGame(game)
+            game = game.moveShot()
         }
 
         canvas.onMouseMove {

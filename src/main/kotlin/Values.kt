@@ -25,5 +25,5 @@ const val GUN_SHOT_HEIGHT = 7
 const val GUN_SHOT_COLOR = WHITE
 const val ALIEN_SHOT_COLOR = RED
 
-val SHOT_SPOT = 0..CANVAS_WIDTH - 1
+val SHOT_SPOT = 0 until CANVAS_WIDTH - 1
 val SHOT_SPEED = 1..4
