@@ -1,6 +1,6 @@
 import pt.isel.canvas.*
 
-data class Game(val area: Area, val alienShots: List<Shot>, val ship: Spaceship, val over: Boolean = false)
+data class Game(val area: Area, val alienShots: List<Shot>,val shipShot: Shot , val ship: Spaceship, val over: Boolean = false)
 data class Area(val with: Int, val height: Int)
 data class Shot(
     val x: Int = SHOT_SPOT.random(),
@@ -24,6 +24,6 @@ const val GUN_SHOT_WIDHT = 4
 const val GUN_SHOT_HEIGHT = 7
 const val GUN_SHOT_COLOR = WHITE
 const val ALIEN_SHOT_COLOR = RED
-
+const val SHIP_SHOT_SPEED = 4
 val SHOT_SPOT = 0 until CANVAS_WIDTH - 1
 val SHOT_SPEED = 1..4
