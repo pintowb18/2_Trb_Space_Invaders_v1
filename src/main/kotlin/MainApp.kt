@@ -13,10 +13,12 @@ fun main() {
     onStart {
         canvas.drawGame(game)
 
-        canvas.onTimeProgress(FPS){
-            game = game.addAlienShot().removeAlienShot().moveAlienShot().moveShot().shotHit().gameOver()
-            canvas.drawGame(game)
-            canvas.drawShot(game)
+        canvas.onTimeProgress(FPS) {
+            if (!game.over) {
+                game = game.removeAlienShot().moveAlienShot().moveShot().shotHit().gameOver()
+                canvas.drawGame(game)
+                canvas.drawShot(game)
+            }
         }
         canvas.onTimeProgress(250) {
             game = game.addAlienShot()

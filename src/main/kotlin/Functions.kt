@@ -4,7 +4,10 @@ fun Canvas.drawGame(game: Game) {
     erase()
     drawSpaceShip(game)
     drawAlienShots(game)
-    if (game.over == true) drawText(game.area.width / 2, SPACESHIP_BASE_LINE, "GAME OVER", RED )
+    if (game.over) {
+        drawText(game.area.width / 2 , SPACESHIP_BASE_LINE, "GAME OVER", RED)
+
+    }
 }
 
 fun Canvas.drawSpaceShip(game: Game) {
@@ -41,9 +44,7 @@ fun Game.gameOver() = Game(
     shipShot,
     ship,
     over = !(alienShots.all { !it.getBoundingBox().intersectsWith(ship.getBoundingBox()) })
-    )
-
-
+)
 
 
 fun BoundingBox.intersectsWith(box: BoundingBox) =
@@ -72,7 +73,9 @@ fun Game.shot(mouseX: Int) = if (shipShot.y < 0) copy(
     )
 ) else copy()
 
-fun Game.addAlienShot() =  copy(alienShots = (alienShots + Shot()))
+
+fun Game.addAlienShot() = if (lst.random() == 0) copy(alienShots = (alienShots + Shot())) else copy()
+
 
 fun Game.removeAlienShot() = Game(area, alienShots.filter { it.y <= CANVAS_HEIGHT }, shipShot, ship)
 

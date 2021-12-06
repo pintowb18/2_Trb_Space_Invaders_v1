@@ -1,13 +1,21 @@
 import pt.isel.canvas.*
 
 
-data class Game(val area: Area, val alienShots: List<Shot>,val shipShot: Shot , val ship: Spaceship, val over: Boolean = false)
+data class Game(
+    val area: Area,
+    val alienShots: List<Shot>,
+    val shipShot: Shot,
+    val ship: Spaceship,
+    val over: Boolean = false
+)
+
 data class Area(val width: Int, val height: Int)
 data class Shot(
     val x: Int = SHOT_SPOT.random(),
     val y: Int = TOP_CANVAS,
     val speed: Int = SHOT_SPEED.random()
 )
+
 data class Spaceship(val width: Int, val height: Int, val x: Int, val y: Int, val color: Int)
 data class Position(val x: Int, val y: Int)
 data class BoundingBox(val corner: Position, val width: Int, val height: Int)
@@ -28,6 +36,7 @@ const val GUN_SHOT_HEIGHT = 7
 const val GUN_SHOT_COLOR = WHITE
 const val ALIEN_SHOT_COLOR = RED
 const val SHIP_SHOT_SPEED = 4
-const val FPS = (1000/70).toInt()
+const val FPS = (1000 / 70).toInt()
 val SHOT_SPOT = 0 until CANVAS_WIDTH - 1
 val SHOT_SPEED = 1..4
+val lst = listOf(0, 1)
