@@ -9,7 +9,14 @@ fun main() {
         Area(canvas.width, canvas.height),
         emptyList(),
         Shot(),
-        Spaceship(SPACESHIP_WIDTH, SPACESHIP_HEIGHT, canvas.width / 2, SPACESHIP_BASE_LINE, SPACESHIP_COLOR)
+        Spaceship(
+            SPACESHIP_WIDTH,
+            SPACESHIP_HEIGHT,
+            canvas.width / 2 - SPACESHIP_WIDTH / 2,
+            SPACESHIP_BASE_LINE - SPACESHIP_HEIGHT / 2,
+            SPACESHIP_COLOR
+        ),
+        alienList()
     )
 
     onStart {
@@ -23,8 +30,14 @@ fun main() {
                 game = game.removeAlienShot().moveAlienShot().moveShot().shotHit().gameOver()
                 canvas.drawGame(game)
                 canvas.drawShot(game)
+                canvas.drawAliens(game)
             }
         }
+
+        canvas.onTimeProgress(30000) {
+
+        }
+
         // cycle of 250 millisecond with 50% chance to add a alien shot to the list
         canvas.onTimeProgress(250) {
             game = game.addAlienShot()
