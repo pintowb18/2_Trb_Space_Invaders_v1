@@ -34,8 +34,8 @@ fun main() {
             }
         }
 
-        canvas.onTimeProgress(30000) {
-
+        canvas.onTimeProgress(3000) {
+            game = game.alienMove()
         }
 
         // cycle of 250 millisecond with 50% chance to add a alien shot to the list

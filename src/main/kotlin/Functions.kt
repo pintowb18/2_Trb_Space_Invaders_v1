@@ -12,43 +12,56 @@ fun Canvas.drawGame(game: Game) {
     }
 }
 
-fun alienList() = listOf(
-        Position(0, 1), Position(1, 1), Position(2, 1), Position(3, 1),
-        Position(4, 1), Position(5, 1), Position(6, 1), Position(7, 1),
-        Position(8, 1), Position(9, 1), Position(10, 1), Position(11, 1),
-        Position(0, 2), Position(1, 2), Position(2, 2), Position(3, 2),
-        Position(4, 2), Position(5, 2), Position(6, 2), Position(7, 2),
-        Position(8, 2), Position(9, 2), Position(10, 2), Position(11, 2),
-        Position(0, 3), Position(1, 3), Position(2, 3), Position(3, 3),
-        Position(4, 3), Position(5, 3), Position(6, 3), Position(7, 3),
-        Position(8, 3), Position(9, 3), Position(10, 3), Position(11, 3),
-        Position(0, 4), Position(1, 4), Position(2, 4), Position(3, 4),
-        Position(4, 4), Position(5, 4), Position(6, 4), Position(7, 4),
-        Position(8, 4), Position(9, 4), Position(10, 4), Position(11, 4),
-        Position(0, 5), Position(1, 5), Position(2, 5), Position(3, 5),
-        Position(4, 5), Position(5, 5), Position(6, 5), Position(7, 5),
-        Position(8, 5), Position(9, 5), Position(10, 5), Position(11, 5)
-    )
-
-
+fun alienList(): List<Alien> = listOf(
+    Alien(0, 1, AlienType.Octopus), Alien(1, 1, AlienType.Octopus), Alien(2, 1, AlienType.Octopus), Alien(3, 1, AlienType.Octopus),
+        Alien(4, 1, AlienType.Octopus), Alien(5, 1, AlienType.Octopus), Alien(6, 1, AlienType.Octopus), Alien(7, 1, AlienType.Octopus),
+        Alien(8, 1, AlienType.Octopus), Alien(9, 1, AlienType.Octopus), Alien(10, 1, AlienType.Octopus), Alien(11, 1, AlienType.Octopus),
+        Alien(0, 2, AlienType.Octopus), Alien(1, 2, AlienType.Octopus), Alien(2, 2, AlienType.Octopus), Alien(3, 2, AlienType.Octopus),
+        Alien(4, 2, AlienType.Octopus), Alien(5, 2, AlienType.Octopus), Alien(6, 2, AlienType.Octopus), Alien(7, 2, AlienType.Octopus),
+        Alien(8, 2, AlienType.Octopus), Alien(9, 2, AlienType.Octopus), Alien(10, 2, AlienType.Octopus), Alien(11, 2, AlienType.Octopus),
+        Alien(0, 3, AlienType.Crab), Alien(1, 3, AlienType.Crab), Alien(2, 3, AlienType.Crab), Alien(3, 3, AlienType.Crab),
+        Alien(4, 3, AlienType.Crab), Alien(5, 3, AlienType.Crab), Alien(6, 3, AlienType.Crab), Alien(7, 3, AlienType.Crab),
+        Alien(8, 3, AlienType.Crab), Alien(9, 3, AlienType.Crab), Alien(10, 3, AlienType.Crab), Alien(11, 3, AlienType.Crab),
+        Alien(0, 4, AlienType.Crab), Alien(1, 4, AlienType.Crab), Alien(2, 4, AlienType.Crab), Alien(3, 4, AlienType.Crab),
+        Alien(4, 4, AlienType.Crab), Alien(5, 4, AlienType.Crab), Alien(6, 4, AlienType.Crab), Alien(7, 4, AlienType.Crab),
+        Alien(8, 4, AlienType.Crab), Alien(9, 4, AlienType.Crab), Alien(10, 4, AlienType.Crab), Alien(11, 4, AlienType.Crab),
+        Alien(0, 5, AlienType.Squid), Alien(1, 5, AlienType.Squid), Alien(2, 5, AlienType.Squid), Alien(3, 5, AlienType.Squid),
+        Alien(4, 5, AlienType.Squid), Alien(5, 5, AlienType.Squid), Alien(6, 5, AlienType.Squid), Alien(7, 5, AlienType.Squid),
+        Alien(8, 5, AlienType.Squid), Alien(9, 5, AlienType.Squid), Alien(10, 5, AlienType.Squid), Alien(11, 5, AlienType.Squid)
+)
 
 fun Canvas.drawAliens(game: Game) {
+
+
     game.alienList.forEach {
-        val x = it.x * CELL_WIDTH
-        val y = it.y * CELL_HEIGHT
-        val spriteX = it.x * SPRITE_WIDTH
-        val spriteY = it.y * SPRITE_HEIGHT
-        val coords ="$spriteX,$spriteY,$SPRITE_WIDTH,$SPRITE_HEIGHT"
-        when (it.y) {
-             1 -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
-             2 -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
-             3 -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
-             4 -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
-             5 -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
+
+        val spriteX = when (it.animationStep) {
+            true -> SPRITE_WIDTH
+            false -> 0
+        }
+        val spriteY = when (it.type) {
+            AlienType.Octopus -> 0 * SPRITE_HEIGHT
+            AlienType.Crab -> 1 * SPRITE_HEIGHT
+            AlienType.Squid -> 2 * SPRITE_HEIGHT
         }
 
+        val x = if (!it.animationStep) it.x * CELL_WIDTH else it.x * CELL_WIDTH + step
+        val y = it.y * CELL_HEIGHT
+
+        val coords = "$spriteX,$spriteY,$SPRITE_WIDTH,$SPRITE_HEIGHT"
+        when (it.type) {
+             AlienType.Octopus -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
+             AlienType.Crab -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
+             AlienType.Squid -> drawImage("invaders.png|$coords", x, y, CELL_WIDTH, CELL_HEIGHT)
+        }
     }
 }
+
+
+fun Game.alienMove():Game {
+    return Game(area, alienShots, shipShot, ship, alienList.map { Alien(x = it.x + 4/CELL_WIDTH, it.y, it.type) })
+}
+
 
 // extension function of canvas that draws the spaceship
 fun Canvas.drawSpaceShip(game: Game) {

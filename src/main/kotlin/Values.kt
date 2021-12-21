@@ -6,7 +6,7 @@ data class Game(
     val alienShots: List<Shot>,
     val shipShot: Shot,
     val ship: Spaceship,
-    val alienList: List<Position>,
+    val alienList: List<Alien>,
     val over: Boolean = false
     )
 
@@ -20,12 +20,9 @@ data class Shot(
 data class Spaceship(val width: Int, val height: Int, val x: Int, val y: Int, val color: Int)
 data class Position(val x: Int, val y: Int)
 data class BoundingBox(val corner: Position, val width: Int, val height: Int)
-enum class AlienType{
-    Squid,
-    Crab,
-    Octopus
-}
-data class Alien(val pos:Position, val type: AlienType)
+
+enum class AlienType{Squid, Crab, Octopus}
+data class Alien(val x: Int, val y: Int, val type: AlienType, val animationStep: Boolean = false)
 
 const val SPRITE_WIDTH = 112
 const val SPRITE_HEIGHT = 80
@@ -48,6 +45,7 @@ const val FPS = (1000 / 70)
 const val GAME_OVER_FONT = 32
 const val GAME_OVER_Y = SPACESHIP_BASE_LINE + GAME_OVER_FONT
 const val GAME_OVER_X = CANVAS_WIDTH/2 - GAME_OVER_FONT * 3
+const val step = 4
 val SHOT_SPOT = 0 until CANVAS_WIDTH - 1
 val SHOT_SPEED = 1..4
 val lst = listOf(0, 1)
