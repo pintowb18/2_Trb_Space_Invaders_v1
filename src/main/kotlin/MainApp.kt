@@ -8,7 +8,7 @@ fun main() {
     var game = Game(
         Area(canvas.width, canvas.height),
         emptyList(),
-        Shot(),
+        Shot(0,0),
         Spaceship(
             SPACESHIP_WIDTH,
             SPACESHIP_HEIGHT,
@@ -16,7 +16,9 @@ fun main() {
             SPACESHIP_BASE_LINE - SPACESHIP_HEIGHT / 2,
             SPACESHIP_COLOR
         ),
-        alienList()
+        alienList(),
+        false,
+        false
     )
 
     onStart {
@@ -27,15 +29,15 @@ fun main() {
         canvas.onTimeProgress(FPS) {
             // this if makes that the game only gets iterated if the val over isn't true.
             if (!game.over) {
-                game = game.removeAlienShot().moveAlienShot().moveShot().shotHit().gameOver()
+                game = game.removeAlienShot().moveAlienShot().moveShot().shotHit().gameOver().alienHit()
                 canvas.drawGame(game)
-                canvas.drawShot(game)
-                canvas.drawAliens(game)
             }
         }
 
-        canvas.onTimeProgress(3000) {
-            game = game.alienMove()
+        canvas.onTimeProgress(300) {
+            if (!game.over) {
+                game = game.alienMove()
+            }
         }
 
         // cycle of 250 millisecond with 50% chance to add a alien shot to the list
