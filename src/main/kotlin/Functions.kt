@@ -108,7 +108,14 @@ fun Canvas.drawSpaceShip(game: Game) {
 
 // extension function of canvas that draws a shot from the spaceship
 fun Canvas.drawShot(game: Game) {
-    drawRect(game.shipShot!!.x, game.shipShot.y, GUN_SHOT_WIDHT, GUN_SHOT_HEIGHT, GUN_SHOT_COLOR)
+
+        drawRect(
+        game.shipShot!!.x,
+        game.shipShot.y,
+        GUN_SHOT_WIDHT,
+        GUN_SHOT_HEIGHT,
+        GUN_SHOT_COLOR
+    )
 }
 
 // extension function of canvas that draws the Alien shots from their list
@@ -119,27 +126,31 @@ fun Canvas.drawAlienShots(game: Game) {
 }
 
 // extension function that filters the alien shots list and returns Game with a new one with only the shots that were not hit
-fun Game.shotHit() = Game(
+fun Game.shotHit() = if (shipShot != null) Game(
     area,
-    alienShots.filter { !shipShot?.getBoundingBox()!!.intersectsWith(it.getBoundingBox()) },
+    alienShots.filter { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) },
     shipShot,
     ship,
     alienList,
     over,
     animationStep
 )
+else copy()
 
-fun Game.alienHit():Game {
-        return Game(
-            area,
-            alienShots,
-            if(shipShot?.getBoundingBox()!!.intersectsWith(alienList..getBoundingBox())) null else shipShot,
-            ship,
-            alienList.filter { !shipShot?.getBoundingBox()!!.intersectsWith(it.getBoundingBox()) },
-            over,
-            animationStep
-        )
-}
+fun Game.alienHit(): Game =
+    if (shipShot != null)
+    Game(
+        area,
+        alienShots,
+        if (alienList.map { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) }.any { true }) null
+        else shipShot,
+        ship,
+        alienList.filter { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) },
+        over,
+        animationStep
+    )
+else copy()
+
 
 // extension function that determinate if the spaceship has been hit by any of the alien shots and if so returns Game with the value of over with true
 fun Game.gameOver() = Game(
@@ -181,19 +192,22 @@ fun Game.moveAlienShot() =
     )
 
 // extension function that returns a new game with the spaceship shot moved based on its speed
-fun Game.moveShot() =
-    Game(
-        area,
-        alienShots,
-        Shot(x = shipShot!!.x, y = shipShot.y - shipShot.speed, speed = shipShot.speed),
-        ship,
-        alienList,
-        over,
-        animationStep
-    )
+fun Game.moveShot(): Game =
+    if (shipShot != null)
+        Game(
+            area,
+            alienShots,
+            Shot(x = shipShot.x, y = shipShot.y - shipShot.speed, speed = shipShot.speed),
+            ship,
+            alienList,
+            over,
+            animationStep
+        )
+    else copy()
+
 
 // extension function that returns a new game with a new spaceship shot, only if there isn't one already
-fun Game.shot(mouseX: Int) = if (shipShot!!.y < 0) copy(
+fun Game.shot(mouseX: Int) = if (shipShot != null && shipShot.y < 0) copy(
     shipShot = Shot(
         mouseX - GUN_SHOT_WIDHT / 2,
         ship.y,

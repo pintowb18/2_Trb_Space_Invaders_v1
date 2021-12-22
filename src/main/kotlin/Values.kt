@@ -47,6 +47,5 @@ const val GAME_OVER_FONT = 32
 const val GAME_OVER_Y = SPACESHIP_BASE_LINE + GAME_OVER_FONT
 const val GAME_OVER_X = CANVAS_WIDTH/2 - GAME_OVER_FONT * 3
 const val STEP = 4
-val SHOT_SPOT = 0 until CANVAS_WIDTH - 1
 val SHOT_SPEED = 1..4
 val lst = listOf(0, 1)

@@ -8,7 +8,7 @@ fun main() {
     var game = Game(
         Area(canvas.width, canvas.height),
         emptyList(),
-        Shot(0,0),
+        null,
         Spaceship(
             SPACESHIP_WIDTH,
             SPACESHIP_HEIGHT,
