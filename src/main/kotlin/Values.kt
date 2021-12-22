@@ -12,6 +12,7 @@ data class Game(
     )
 
 data class Area(val width: Int, val height: Int)
+
 data class Shot(
     val x: Int,
     val y: Int,

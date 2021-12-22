@@ -29,8 +29,9 @@ fun main() {
         canvas.onTimeProgress(FPS) {
             // this if makes that the game only gets iterated if the val over isn't true.
             if (!game.over) {
-                game = game.removeAlienShot().moveAlienShot().moveShot().shotHit().gameOver().alienHit()
+                game = game.changes()
                 canvas.drawGame(game)
+                println(game.shipShot)
             }
         }
 

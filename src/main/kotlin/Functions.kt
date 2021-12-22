@@ -3,15 +3,18 @@ import pt.isel.canvas.*
 // extension function of canvas that erases the canvas and draws again with a new Game
 fun Canvas.drawGame(game: Game) {
     erase()
-    drawShot(game)
     drawSpaceShip(game)
     drawAliens(game)
+    if (game.shipShot != null) drawShot(game)
     drawAlienShots(game)
 
     if (game.over) {
         drawText(GAME_OVER_X, GAME_OVER_Y, "Game Over", RED, GAME_OVER_FONT)
     }
 }
+
+fun Game.changes(): Game = removeAlienShot().moveAlienShot().shotHit().gameOver().alienHit().moveShot()
+
 
 fun alienList(): List<Alien> = listOf(
     Alien(0 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
@@ -106,17 +109,6 @@ fun Canvas.drawSpaceShip(game: Game) {
     drawImage("spaceship.png", game.ship.x, game.ship.y, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
 }
 
-// extension function of canvas that draws a shot from the spaceship
-fun Canvas.drawShot(game: Game) {
-
-        drawRect(
-        game.shipShot!!.x,
-        game.shipShot.y,
-        GUN_SHOT_WIDHT,
-        GUN_SHOT_HEIGHT,
-        GUN_SHOT_COLOR
-    )
-}
 
 // extension function of canvas that draws the Alien shots from their list
 fun Canvas.drawAlienShots(game: Game) {
@@ -126,30 +118,32 @@ fun Canvas.drawAlienShots(game: Game) {
 }
 
 // extension function that filters the alien shots list and returns Game with a new one with only the shots that were not hit
-fun Game.shotHit() = if (shipShot != null) Game(
-    area,
-    alienShots.filter { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) },
-    shipShot,
-    ship,
-    alienList,
-    over,
-    animationStep
-)
-else copy()
+fun Game.shotHit(): Game {
+    return if (shipShot != null)
+        Game(
+            area,
+            alienShots.filter { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) },
+            shipShot,
+            ship,
+            alienList,
+            over,
+            animationStep
+        )
+    else copy()
+}
 
 fun Game.alienHit(): Game =
     if (shipShot != null)
-    Game(
-        area,
-        alienShots,
-        if (alienList.map { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) }.any { true }) null
-        else shipShot,
-        ship,
-        alienList.filter { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) },
-        over,
-        animationStep
-    )
-else copy()
+        Game(
+            area,
+            alienShots,
+            if (shipShot.y < 0 || alienList.any { shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) }) null else shipShot,
+            ship,
+            alienList.filter { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) },
+            over,
+            animationStep
+        )
+    else copy()
 
 
 // extension function that determinate if the spaceship has been hit by any of the alien shots and if so returns Game with the value of over with true
@@ -191,29 +185,37 @@ fun Game.moveAlienShot() =
         animationStep
     )
 
-// extension function that returns a new game with the spaceship shot moved based on its speed
-fun Game.moveShot(): Game =
-    if (shipShot != null)
-        Game(
-            area,
-            alienShots,
-            Shot(x = shipShot.x, y = shipShot.y - shipShot.speed, speed = shipShot.speed),
-            ship,
-            alienList,
-            over,
-            animationStep
-        )
-    else copy()
-
-
 // extension function that returns a new game with a new spaceship shot, only if there isn't one already
-fun Game.shot(mouseX: Int) = if (shipShot != null && shipShot.y < 0) copy(
+fun Game.shot(mouseX: Int): Game = copy(
     shipShot = Shot(
         mouseX - GUN_SHOT_WIDHT / 2,
         ship.y,
         SHIP_SHOT_SPEED
     )
-) else copy()
+)
+
+// extension function of canvas that draws a shot from the spaceship
+fun Canvas.drawShot(game: Game) {
+    drawRect(
+        game.shipShot!!.x,
+        game.shipShot!!.y,
+        GUN_SHOT_WIDHT,
+        GUN_SHOT_HEIGHT,
+        GUN_SHOT_COLOR
+    )
+}
+
+// extension function that returns a new game with the spaceship shot moved based on its speed
+fun Game.moveShot(): Game =
+    Game(
+        area,
+        alienShots,
+        shipShot?.let { Shot(x = shipShot.x, y = shipShot.y - shipShot.speed, speed = shipShot.speed) },
+        ship,
+        alienList,
+        over,
+        animationStep
+    )
 
 // extension function that returns a new game with one additional shot on a 50% chance
 fun Game.addAlienShot(): Game {
@@ -225,6 +227,7 @@ fun Game.addAlienShot(): Game {
 // extension function that return a new game with the shots that passed beyond the canvas limit removed from the alien shots list
 fun Game.removeAlienShot() =
     Game(area, alienShots.filter { it.y <= CANVAS_HEIGHT }, shipShot, ship, alienList, over, animationStep)
+
 
 // function that determinate if a given mouseEvent is within canvas limit
 fun isOnLimit(mouseEvent: MouseEvent): Boolean =
