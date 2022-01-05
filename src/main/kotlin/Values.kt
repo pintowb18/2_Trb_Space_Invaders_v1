@@ -8,7 +8,8 @@ data class Game(
     val ship: Spaceship,
     val alienList: List<Alien>,
     val over: Boolean,
-    val animationStep: Boolean
+    val animationStep: Boolean,
+    val step: Int = 4
     )
 
 data class Area(val width: Int, val height: Int)
@@ -47,6 +48,7 @@ const val FPS = (1000 / 70)
 const val GAME_OVER_FONT = 32
 const val GAME_OVER_Y = SPACESHIP_BASE_LINE + GAME_OVER_FONT
 const val GAME_OVER_X = CANVAS_WIDTH/2 - GAME_OVER_FONT * 3
-const val STEP = 4
+const val DOWN = 20
+val CANVAS_BOUNDINGBOX = BoundingBox(Position(0,0),CANVAS_WIDTH, CANVAS_HEIGHT)
 val SHOT_SPEED = 1..4
 val lst = listOf(0, 1)

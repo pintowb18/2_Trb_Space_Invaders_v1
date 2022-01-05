@@ -13,7 +13,7 @@ fun Canvas.drawGame(game: Game) {
     }
 }
 
-fun Game.changes(): Game = removeAlienShot().moveAlienShot().shotHit().gameOver().alienHit().moveShot()
+fun Game.changes(): Game = removeAlienShot().moveAlienShot().shotHit().gameOver().alienHit().moveShot().alienIsOnLimit()
 
 
 fun alienList(): List<Alien> = listOf(
@@ -102,7 +102,7 @@ fun Canvas.drawAliens(game: Game) {
 }
 
 fun Game.alienMove() =
-    Game(area, alienShots, shipShot, ship, alienList.map { Alien(it.x + STEP, it.y, it.type) }, over, !animationStep)
+    Game(area, alienShots, shipShot, ship, alienList.map { Alien(it.x + step, it.y, it.type) }, over, !animationStep)
 
 // extension function of canvas that draws the spaceship
 fun Canvas.drawSpaceShip(game: Game) {
@@ -137,7 +137,9 @@ fun Game.alienHit(): Game =
         Game(
             area,
             alienShots,
-            if (shipShot.y < 0 || alienList.any { shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) }) null else shipShot,
+            if (shipShot.y < 0 || alienList.any {
+                    shipShot.getBoundingBox().intersectsWith(it.getBoundingBox())
+                }) null else shipShot,
             ship,
             alienList.filter { !shipShot.getBoundingBox().intersectsWith(it.getBoundingBox()) },
             over,
@@ -234,6 +236,19 @@ fun isOnLimit(mouseEvent: MouseEvent): Boolean =
     mouseEvent.x < CANVAS_WIDTH - SPACESHIP_WIDTH / 2 && mouseEvent.x > SPACESHIP_WIDTH / 2
 
 
-//fun Game.alienIsOnLimit():Boolean {
-//
-//}
+fun Game.alienIsOnLimit(): Game =
+
+    if (alienList.any { !CANVAS_BOUNDINGBOX.intersectsWith(it.getBoundingBox()) })
+        Game(
+            area,
+            alienShots,
+            shipShot,
+            ship,
+            alienList.map { Alien(it.x, it.y + DOWN, it.type) },
+            over,
+            animationStep,
+            step = step * -1
+        )
+    else copy()
+
+
