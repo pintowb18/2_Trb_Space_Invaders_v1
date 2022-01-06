@@ -9,7 +9,7 @@ data class Game(
     val alienList: List<Alien>,
     val over: Boolean,
     val animationStep: Boolean,
-    val step: Int = 4
+    val step: Int
     )
 
 data class Area(val width: Int, val height: Int)
@@ -33,7 +33,7 @@ const val CELL_WIDTH= 56
 const val CELL_HEIGHT = 50
 const val CANVAS_WIDTH = 700
 const val CANVAS_HEIGHT = 500
-const val TOP_CANVAS = 0
+const val STEP = 4
 const val BACKGROUND_COLOR = BLACK
 const val SPACESHIP_WIDTH = 50
 const val SPACESHIP_HEIGHT = 30

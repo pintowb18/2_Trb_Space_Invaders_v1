@@ -18,8 +18,8 @@ fun main() {
         ),
         alienList(),
         false,
-        false
-    )
+        false,
+        STEP)
 
     onStart {
         // draws the first state of the game
@@ -37,14 +37,14 @@ fun main() {
 
         canvas.onTimeProgress(300) {
             if (!game.over) {
-                game = game.alienMove()
+                game = game.alienIsOnLimit().alienMove()
             }
         }
 
         // cycle of 250 millisecond with 50% chance to add a alien shot to the list
-        canvas.onTimeProgress(250) {
-            game = game.addAlienShot()
-        }
+//        canvas.onTimeProgress(250) {
+//            game = game.addAlienShot()
+//        }
         // gives the coordenate x of the mouse to the function moveSpaceShip only if it (mouse cursor) is within limits
         canvas.onMouseMove {
             if (isOnLimit(it)) game = game.moveSpaceship(it.x)
