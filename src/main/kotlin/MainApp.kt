@@ -31,10 +31,10 @@ fun main() {
             if (!game.over) {
                 game = game.changes()
                 canvas.drawGame(game)
-                println(game.shipShot)
+
             }
         }
-
+        // Cycle where the changes to the list of Aliens happen on a period of 300 milliseconds
         canvas.onTimeProgress(300) {
             if (!game.over) {
                 game = game.alienIsOnLimit().alienMove()
@@ -42,16 +42,16 @@ fun main() {
         }
 
         // cycle of 250 millisecond with 50% chance to add a alien shot to the list
-//        canvas.onTimeProgress(250) {
-//            game = game.addAlienShot()
-//        }
+        canvas.onTimeProgress(250) {
+            game = game.addAlienShot()
+        }
         // gives the coordenate x of the mouse to the function moveSpaceShip only if it (mouse cursor) is within limits
         canvas.onMouseMove {
             if (isOnLimit(it)) game = game.moveSpaceship(it.x)
         }
         // creates a shot from the spaceship with the press of the mouse click
         canvas.onMouseDown {
-            game = game.shot(it.x)
+            if (game.shipShot == null )game = game.shot(it.x)
         }
     }
     onFinish { }

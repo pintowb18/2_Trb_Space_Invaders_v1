@@ -1,13 +1,13 @@
 import pt.isel.canvas.*
+import java.io.File
 
 // extension function of canvas that erases the canvas and draws again with a new Game
 fun Canvas.drawGame(game: Game) {
     erase()
     drawSpaceShip(game)
     drawAliens(game)
-    if (game.shipShot != null) drawShot(game)
     drawAlienShots(game)
-
+    if (game.shipShot != null) drawShipShot(game)
     if (game.over) {
         drawText(GAME_OVER_X, GAME_OVER_Y, "Game Over", RED, GAME_OVER_FONT)
     }
@@ -15,84 +15,49 @@ fun Canvas.drawGame(game: Game) {
 
 fun Game.changes(): Game = removeAlienShot().moveAlienShot().shotHit().gameOver().alienHit().moveShot()
 
+fun buildAlien(tokens: List<String>):Alien =
+    Alien(
+        tokens[0].toInt() * CELL_WIDTH,
+        tokens[1].toInt() * CELL_HEIGHT,
+        when (tokens[1].toInt()) {
+            1 -> AlienType.Octopus
+            2 -> AlienType.Octopus
+            3 -> AlienType.Crab
+            4 -> AlienType.Crab
+            else  -> AlienType.Squid
+        }
 
-fun alienList(): List<Alien> = listOf(
-    Alien(0 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(1 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(2 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(3 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(4 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(5 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(6 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(7 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(8 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(9 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(10 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(11 * CELL_WIDTH, 1 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(0 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(1 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(2 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(3 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(4 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(5 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(6 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(7 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(8 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(9 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(10 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(11 * CELL_WIDTH, 2 * CELL_HEIGHT, AlienType.Octopus),
-    Alien(0 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(1 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(2 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(3 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(4 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(5 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(6 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(7 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(8 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(9 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(10 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(11 * CELL_WIDTH, 3 * CELL_HEIGHT, AlienType.Crab),
-    Alien(0 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(1 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(2 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(3 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(4 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(5 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(6 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(7 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(8 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(9 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(10 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(11 * CELL_WIDTH, 4 * CELL_HEIGHT, AlienType.Crab),
-    Alien(0 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(1 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(2 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(3 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(4 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(5 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(6 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(7 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(8 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(9 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(10 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid),
-    Alien(11 * CELL_WIDTH, 5 * CELL_HEIGHT, AlienType.Squid)
-)
+    )
 
+
+// function that receives a file with each element of each Alien and saves it on a list of Aliens
+fun alienList(): List<Alien> {
+    var line: String?
+    var alienLst = emptyList<Alien>()
+    do {
+        line = readLine()
+        if (line != null) {
+            val tokens = line.split(',')
+            val alien = buildAlien(tokens)
+            alienLst += alien
+        }
+    }
+        while (line != null)
+
+    return alienLst
+}
+
+
+// extension function that draws the aliens with the right image(sprite) from the file given, depending on the type it recieved from the list of aliens
 fun Canvas.drawAliens(game: Game) {
-
     game.alienList.forEach {
-
         val spriteX = if (game.animationStep) SPRITE_WIDTH else 0
-
         val spriteY = when (it.type) {
             AlienType.Octopus -> 0 * SPRITE_HEIGHT
             AlienType.Crab -> 1 * SPRITE_HEIGHT
             AlienType.Squid -> 2 * SPRITE_HEIGHT
         }
-
         val coords = "$spriteX,$spriteY,$SPRITE_WIDTH,$SPRITE_HEIGHT"
-
         when (it.type) {
             AlienType.Octopus -> drawImage("invaders.png|$coords", it.x, it.y, CELL_WIDTH, CELL_HEIGHT)
             AlienType.Crab -> drawImage("invaders.png|$coords", it.x, it.y, CELL_WIDTH, CELL_HEIGHT)
@@ -101,14 +66,10 @@ fun Canvas.drawAliens(game: Game) {
     }
 }
 
-fun Game.alienMove() =
-    Game(area, alienShots, shipShot, ship, alienList.map { Alien(it.x + step, it.y, it.type) }, over, !animationStep, step)
-
 // extension function of canvas that draws the spaceship
 fun Canvas.drawSpaceShip(game: Game) {
     drawImage("spaceship.png", game.ship.x, game.ship.y, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
 }
-
 
 // extension function of canvas that draws the Alien shots from their list
 fun Canvas.drawAlienShots(game: Game) {
@@ -116,6 +77,18 @@ fun Canvas.drawAlienShots(game: Game) {
         drawRect(it.x, it.y, GUN_SHOT_WIDHT, GUN_SHOT_HEIGHT, ALIEN_SHOT_COLOR)
     }
 }
+
+// extension function of canvas that draws a shot from the spaceship
+fun Canvas.drawShipShot(game: Game) {
+    drawRect(
+        game.shipShot!!.x,
+        game.shipShot!!.y,
+        GUN_SHOT_WIDHT,
+        GUN_SHOT_HEIGHT,
+        GUN_SHOT_COLOR
+    )
+}
+
 
 // extension function that filters the alien shots list and returns Game with a new one with only the shots that were not hit
 fun Game.shotHit(): Game {
@@ -149,6 +122,14 @@ fun Game.alienHit(): Game =
         )
     else copy()
 
+// extension function that returns a new game with a new spaceship shot, only if there isn't one already
+fun Game.shot(mouseX: Int): Game = copy(
+    shipShot = Shot(
+        mouseX - GUN_SHOT_WIDHT / 2,
+        ship.y,
+        SHIP_SHOT_SPEED
+    )
+)
 
 // extension function that determinate if the spaceship has been hit by any of the alien shots and if so returns Game with the value of over with true
 fun Game.gameOver() = Game(
@@ -170,7 +151,11 @@ fun BoundingBox.intersectsWith(box: BoundingBox) =
 // extension function that returns the area (boundingboxes) of the spaceship
 fun Spaceship.getBoundingBox() = BoundingBox(Position(x, y), width, height)
 
+// extension function that returns the area (boundingboxes) of the Alien
 fun Alien.getBoundingBox() = BoundingBox(Position(x, y), CELL_WIDTH, CELL_HEIGHT)
+
+// extension function that returns true when the bounding box touches the sides of the canvas
+fun BoundingBox.touchSides(): Boolean = this.corner.x < 0 || this.corner.x + width > CANVAS_WIDTH
 
 // extension function that returns the areas (boundingboxes) of the shot
 fun Shot.getBoundingBox() = BoundingBox(Position(x, y), GUN_SHOT_WIDHT, GUN_SHOT_HEIGHT)
@@ -191,25 +176,17 @@ fun Game.moveAlienShot() =
         step
     )
 
-// extension function that returns a new game with a new spaceship shot, only if there isn't one already
-fun Game.shot(mouseX: Int): Game = copy(
-    shipShot = Shot(
-        mouseX - GUN_SHOT_WIDHT / 2,
-        ship.y,
-        SHIP_SHOT_SPEED
+fun Game.alienMove() =
+    Game(
+        area,
+        alienShots,
+        shipShot,
+        ship,
+        alienList.map { Alien(it.x + step, it.y, it.type) },
+        over,
+        !animationStep,
+        step
     )
-)
-
-// extension function of canvas that draws a shot from the spaceship
-fun Canvas.drawShot(game: Game) {
-    drawRect(
-        game.shipShot!!.x,
-        game.shipShot!!.y,
-        GUN_SHOT_WIDHT,
-        GUN_SHOT_HEIGHT,
-        GUN_SHOT_COLOR
-    )
-}
 
 // extension function that returns a new game with the spaceship shot moved based on its speed
 fun Game.moveShot(): Game =
@@ -240,10 +217,9 @@ fun Game.removeAlienShot() =
 fun isOnLimit(mouseEvent: MouseEvent): Boolean =
     mouseEvent.x < CANVAS_WIDTH - SPACESHIP_WIDTH / 2 && mouseEvent.x > SPACESHIP_WIDTH / 2
 
-
+// function that returns a game where the aliens descends and changes direction if any of the aliens touches the sides of the canvas
 fun Game.alienIsOnLimit(): Game =
-
-    if (alienList.any { !CANVAS_BOUNDINGBOX.intersectsWith(it.getBoundingBox()) })
+    if (alienList.any { it.getBoundingBox().touchSides() })
         Game(
             area,
             alienShots,
